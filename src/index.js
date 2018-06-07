@@ -1,96 +1,64 @@
-document.addEventListener("DOMContentLoaded", function(e){
-	const endPoint = 'http://localhost:3000/api/v1/properties'
-	fetchProperty(endPoint);
-	createPostForm();
-	//includeEditForm();
-	//includeDeleteForm();
-})
-
-function createPostForm(){
-	let createForm = document.getElementById('create-form')
-	let form = document.createElement('form')
-	form.method = 'POST'
-	form.id = "form"
-	form.action = '#'
-	let name_edit = document.createElement('input')
-	name_edit.placeholder = 'Name'
-	name_edit.id="name"
-	name_edit.type = 'text'
-	let description_edit = document.createElement('input')
-	description_edit.placeholder = 'Description'
-	description_edit.id="description"
-	description_edit.type = 'text'
-	let address_edit = document.createElement('input')
-		address_edit.id="address"
-	address_edit.placeholder = 'Address'
-	address_edit.type = 'text'
-	let phone_number_edit = document.createElement('input')
-	phone_number_edit.placeholder = 'Phone Number'
-	phone_number_edit.id = 'phone_number'
-	phone_number_edit.type = 'text'
-	let website_edit = document.createElement('input')
-	website_edit.placeholder = 'Website'
-	website_edit.id ="website"
-	website_edit.type = 'text'
-	//click 'save' button
-	let button = document.getElementById('submit')
-	button.class = "ui button"
-	button.innerText = "Create New Property"
-	createForm.appendChild(form)
-	form.appendChild(name_edit)
-	form.appendChild(description_edit)
-	form.appendChild(address_edit)
-	form.appendChild(phone_number_edit)
-	form.appendChild(website_edit)
-	form.appendChild(button)
-	form.addEventListener('submit', function(e){
+document.addEventListener('DOMContentLoaded', function(e){
+	const endpoint = "http://localhost:3000/api/v1/properties"
+	let adapter = new Adapter(endpoint)
+	adapter.fetchAndSetProperty()
+	createForm();
+	let newForm = document.getElementById('create-form')
+	newForm.addEventListener('submit', function(e){
 		e.preventDefault()
-		
+		console.log(e)
+		prop = new Property(
+			document.getElementById("id-new").value,
+			document.getElementById("name-new").value, 
+			document.getElementById("description-new").value, 
+			document.getElementById("address-new").value, 
+			document.getElementById("phone_number-new").value, 			
+			document.getElementById("website-new").value
+			)
+		adapter.createProperty(prop); 
+		prop.displayProperty(); 
 	})
-}
-function createPatchForm(){
-	let form = document.createElement('form')
-	form.method = 'PATCH'
-	form.id = "create-update-form"
-	form.action = '#'
-	let name_edit = document.createElement('input')
-	name_edit.placeholder = 'Name'
-	name_edit.id="name"
-	name_edit.type = 'text'
-	let description_edit = document.createElement('input')
-	description_edit.placeholder = 'Description'
-	description_edit.id="description"
-	description_edit.type = 'text'
-	let address_edit = document.createElement('input')
-		address_edit.id="address"
+	let properties = document.getElementById('properties')
+	properties.addEventListener('click', function(e){
+		let id = document.getElementById("id").innerText
+		id = Number(id);
+	});
+});
 
-	address_edit.placeholder = 'Address'
-	address_edit.type = 'text'
-	let phone_number_edit = document.createElement('input')
-	phone_number_edit.placeholder = 'Phone Number'
-	phone_number_edit.id = 'phone_number'
-	phone_number_edit.type = 'text'
-	let website_edit = document.createElement('input')
-	website_edit.placeholder = 'Website'
-	website_edit.id ="website"
-	website_edit.type = 'text'
-	//click 'save' button
+function createForm(){
+	let body = document.getElementsByClassName('ui text container')[0]
+	let createForm = document.createElement('form')
+	createForm.id = "create-form"
+	createForm.action ="#"
+	createForm.method = "POST"
+	let id = document.createElement('input')
+	id.id = 'id-new'
+	id.placeholder = "ID"
+	let name = document.createElement('input')
+	name.id = 'name-new'
+	name.placeholder = "Name"
+	let description = document.createElement('input')
+	description.placeholder = "Description"
+	description.id = "description-new"
+	let address = document.createElement('input')
+	address.placeholder = "Address"
+	address.id = "address-new"
+	let phone_number = document.createElement('input')
+	phone_number.placeholder = "Phone Number"
+	phone_number.id = "phone_number-new"
+	let website = document.createElement('input')
+	website.placeholder = "Website"
+	website.id = "website-new"
 	let button = document.createElement('button')
-	button.class = "ui button"
-	button.innerText = 'Create New Property'	
-	prop.appendChild(form)
-	form.appendChild(name_edit)
-	form.appendChild(description_edit)
-	form.appendChild(address_edit)
-	form.appendChild(phone_number_edit)
-	form.appendChild(website_edit)
-	form.appendChild(button)
-}
-function fetchProperty(endpoint){
-		fetch(endpoint)
-		.then(res => res.json())
-		.then(json => json.forEach(property =>{
-			let prop = new Property(property.name, property.description, property.address, property.phone_number, property.website)
-			prop.createProperty();
-	}))
+	button.innerText = "Create New Property"
+	let hr = document.createElement('hr')
+	body.appendChild(createForm)
+	createForm.appendChild(id)
+	createForm.appendChild(name)
+	createForm.appendChild(description)
+	createForm.appendChild(address)
+	createForm.appendChild(phone_number)
+	createForm.appendChild(website)
+	createForm.appendChild(button)
+	createForm.appendChild(hr)
 }
